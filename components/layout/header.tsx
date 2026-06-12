@@ -22,11 +22,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
-import { NavIcon } from "@/components/layout/nav-icon";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { createClient } from "@/lib/supabase/client";
-import { cn, getInitials } from "@/lib/utils";
-import { SCREENS, PAGE_SUBTITLES } from "@/lib/constants";
+import { getInitials } from "@/lib/utils";
+import { PAGE_SUBTITLES } from "@/lib/constants";
 import type { AppNotification } from "@/types";
 
 interface HeaderProps {
@@ -109,21 +108,6 @@ export function Header({
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden items-center gap-2 xl:flex">
-          {SCREENS.filter((s) => !pathname.startsWith(s.href)).map((screen) => (
-            <Link
-              key={screen.href}
-              href={screen.href}
-              className={cn(
-                "flex h-[38px] items-center gap-2 rounded-xl border border-border bg-background px-4 text-[13px] font-semibold text-muted-foreground transition-all hover:bg-accent active:scale-95"
-              )}
-            >
-              <NavIcon name={screen.icon} className="h-3.5 w-3.5" />
-              {screen.title}
-            </Link>
-          ))}
-        </div>
-
         <NotificationBell initialNotifications={notifications} />
 
         <DropdownMenu>

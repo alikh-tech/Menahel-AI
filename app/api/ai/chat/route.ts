@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { findFAQAnswer, NO_MATCH_RESPONSE } from "@/lib/ai/knowledge-base";
+import { formatPersonalizedAnswer, getUserAcademicContext } from "@/lib/ai/user-context";
 
 export const runtime = "nodejs";
 
@@ -37,12 +38,23 @@ export async function POST(req: Request) {
     const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
     const match = findFAQAnswer(lastUserMessage?.content ?? "");
 
-    return NextResponse.json(
-      match
-        ? { content: match.answer, actions: match.actions, demo: true }
-        : { content: NO_MATCH_RESPONSE, demo: true },
-      { status: 200 }
-    );
+    if (!match) {
+      return NextResponse.json({ content: NO_MATCH_RESPONSE, demo: true }, { status: 200 });
+    }
+
+    let answer = match.answer;
+
+    if (match.dataKey) {
+      try {
+        const context = await getUserAcademicContext(supabase, user.id);
+        answer = formatPersonalizedAnswer(match.dataKey, context);
+      } catch (err) {
+        console.error("Failed to load personalized AI context:", err);
+        // Fall back to the static FAQ answer if real data can't be fetched.
+      }
+    }
+
+    return NextResponse.json({ content: answer, actions: match.actions, demo: true }, { status: 200 });
   }
 
   try {

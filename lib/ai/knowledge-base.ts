@@ -1,5 +1,20 @@
 import type { DemoAction } from "@/types";
 
+/**
+ * Identifies entries whose answer can be personalized with the requesting
+ * user's real portal data (see lib/ai/user-context.ts). When set, the chat
+ * route replaces `answer` with a value computed from the user's actual
+ * documents/requests/transactions/academic data, falling back to the static
+ * `answer` below if that data can't be fetched.
+ */
+export type FAQDataKey =
+  | "average"
+  | "credits"
+  | "tuitionStatus"
+  | "nextExam"
+  | "openRequests"
+  | "pendingDocuments";
+
 export interface FAQEntry {
   /** Stable identifier, also used as the notification/source key if needed. */
   id: string;
@@ -13,6 +28,8 @@ export interface FAQEntry {
   answer: string;
   /** Optional quick-action buttons (view/download/email) shown under the answer. */
   actions?: DemoAction[];
+  /** If set, the answer is replaced with a personalized, real-data answer when possible. */
+  dataKey?: FAQDataKey;
 }
 
 const DOCUMENT_ACTIONS: DemoAction[] = [
@@ -117,6 +134,15 @@ export const KNOWLEDGE_BASE: FAQEntry[] = [
     answer:
       'במרכז המסמכים, לחצו על אייקון הפח שבשורת המסמך. תופיע חלונית אישור מחיקה - אישרו כדי להסיר את המסמך לצמיתות (לא ניתן לשחזר פעולה זו).',
   },
+  {
+    id: "doc-pending-count",
+    category: "מסמכים אקדמיים",
+    question: "כמה מסמכים ממתינים לאישור",
+    keywords: ["מסמכים ממתינים", "מסמכים בבדיקה", "מסמכים לא מאושרים"],
+    answer:
+      'מסמכים שהועלו ועדיין לא אושרו נמצאים בסטטוס "התקבל" או "בבדיקה". את הרשימה והסטטוסים המעודכנים תוכלו לראות במרכז המסמכים.',
+    dataKey: "pendingDocuments",
+  },
 
   // ---------------------------------------------------------------------
   // ציונים ולימודים
@@ -128,6 +154,7 @@ export const KNOWLEDGE_BASE: FAQEntry[] = [
     keywords: ["ממוצע", "ממוצע משוקלל", "ממוצע ציונים"],
     answer:
       "הממוצע המשוקלל הנוכחי שלך עומד על 87.6, על סמך כל הקורסים שהושלמו עד כה.",
+    dataKey: "average",
   },
   {
     id: "grades-credits",
@@ -136,6 +163,7 @@ export const KNOWLEDGE_BASE: FAQEntry[] = [
     keywords: ["נקודות זכות", "נ\"ז", "צבירת נקודות"],
     answer:
       "צברת עד כה 25 מתוך 120 נקודות הזכות הנדרשות להשלמת התואר - כלומר כ-21% מהדרישות.",
+    dataKey: "credits",
   },
   {
     id: "grades-courses-list",
@@ -248,6 +276,7 @@ export const KNOWLEDGE_BASE: FAQEntry[] = [
     keywords: ["מבחן קרוב", "מתי המבחן", "מבחן הבא"],
     answer:
       'המבחן הקרוב שלך הוא במקצוע "סטטיסטיקה למדעי החברה", בעוד 3 ימים, בשעה 09:00, בכיתה 204. מומלץ להתחיל בחזרות מוקדם.',
+    dataKey: "nextExam",
   },
   {
     id: "exams-list-all",
@@ -297,9 +326,10 @@ export const KNOWLEDGE_BASE: FAQEntry[] = [
     id: "finance-tuition-debt",
     category: "שכר לימוד וכספים",
     question: "האם יש לי חוב שכר לימוד",
-    keywords: ["חוב שכר לימוד", "יתרת חוב", "חוב לימודים"],
+    keywords: ["חוב שכר לימוד", "יתרת חוב", "חוב לימודים", "מצב שכר לימוד", "סטטוס שכר לימוד"],
     answer:
       "נכון להיום קיימת יתרת חוב של 1,450 ₪ עבור שכר הלימוד של הסמסטר הנוכחי. התשלום הבא נקבע ל-1 בחודש הבא. ניתן לעקוב אחרי כל החיובים והתשלומים במרכז הכספים.",
+    dataKey: "tuitionStatus",
   },
   {
     id: "finance-tuition-total",
@@ -424,6 +454,15 @@ export const KNOWLEDGE_BASE: FAQEntry[] = [
     keywords: ["פנייה כללית", "שאלה למזכירות", "פנייה למזכירות"],
     answer:
       'לפנייה כללית (שאינה מועד מיוחד, השגה או מלגה), פתחו בקשה חדשה מסוג "פנייה כללית" בעמוד "בקשות" ותארו את הנושא. הצוות המתאים יטפל בבקשה ויעדכן את הסטטוס.',
+  },
+  {
+    id: "requests-open-count",
+    category: "בקשות מנהלתיות",
+    question: "כמה בקשות פתוחות יש לי",
+    keywords: ["בקשות פתוחות", "בקשות בטיפול", "כמה בקשות"],
+    answer:
+      'בקשות פתוחות הן בקשות בסטטוס "התקבל", "בטיפול" או "נדרש מסמך". את הרשימה והסטטוסים המעודכנים תוכלו לראות בעמוד "בקשות".',
+    dataKey: "openRequests",
   },
 
   // ---------------------------------------------------------------------
