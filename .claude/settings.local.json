@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "PowerShell(node -v)",
+      "PowerShell(npm -v)",
+      "PowerShell(where.exe node; Get-ChildItem \"C:\\\\Program Files\\\\nodejs\" -ErrorAction SilentlyContinue; Get-ChildItem \"$env:APPDATA\\\\npm\" -ErrorAction SilentlyContinue)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\nodejs\"; npm run build 2>&1 | Select-Object -Last 150)",
+      "Bash(rm scripts/typecheck-debug.ts)",
+      "Bash(rmdir scripts *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\alikh\\\\OneDrive\\\\Desktop\\\\Menahel-AI\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(cd \"/c/Users/alikh/OneDrive/Desktop/Menahel-AI\" && cat package.json | grep -iE \"pdf|jspdf|react-pdf|canvas\")"
+    ]
+  }
+}
