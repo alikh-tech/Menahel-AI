@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
-import { getDemoResponse } from "@/lib/ai/demo-responses";
+import { findFAQAnswer, NO_MATCH_RESPONSE } from "@/lib/ai/knowledge-base";
 
 export const runtime = "nodejs";
 
@@ -35,10 +35,12 @@ export async function POST(req: Request) {
 
   if (!apiKey) {
     const lastUserMessage = [...messages].reverse().find((m) => m.role === "user");
-    const demo = getDemoResponse(lastUserMessage?.content ?? "");
+    const match = findFAQAnswer(lastUserMessage?.content ?? "");
 
     return NextResponse.json(
-      { content: demo.content, actions: demo.actions, demo: true },
+      match
+        ? { content: match.answer, actions: match.actions, demo: true }
+        : { content: NO_MATCH_RESPONSE, demo: true },
       { status: 200 }
     );
   }

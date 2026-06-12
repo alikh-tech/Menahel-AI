@@ -33,7 +33,6 @@ export const NAV_ITEMS: NavItem[] = [
   { title: "מרכז מסמכים", href: "/documents", icon: "FolderOpen" },
   { title: "מרכז כספים", href: "/finance", icon: "Wallet" },
   { title: "תזכורות", href: "/reminders", icon: "Clock" },
-  { title: "התראות", href: "/notifications", icon: "Bell" },
   { title: "פרופיל", href: "/profile", icon: "User" },
 ];
 
